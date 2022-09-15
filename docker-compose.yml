@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  springapp:
+    image: maven:3.8.6-eclipse-temurin-11
+    working_dir: /usr/src/app
+    command: mvn spring-boot:run
+    ports:
+      - 8080:8080
+    volumes:
+      - maven-volume:/root/.m2
+      - .:/usr/src/app
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=springdev
+      - DB_USERNAME=springuser
+      - DB_PASSWORD=springpass
+    networks:
+      - myappnet
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:14.5
+    environment:
+      - POSTGRES_USER=springuser
+      - POSTGRE_PASSWORD=springpass
+      - POSTGRES_DB=springdev
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+    networks:
+      - myappnet
+
+
+networks:
+  myappnet: {}
+
+volumes:
+  db-volume: {}
+  maven-volume: {}
