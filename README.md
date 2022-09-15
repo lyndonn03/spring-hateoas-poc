@@ -1,1 +1,3 @@
-# spring-hateoas-poc
+# [WIP] spring-hateoas-poc
+
+Building flexible APIs
