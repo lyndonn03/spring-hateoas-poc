@@ -26,6 +26,8 @@ services:
     environment:
       - POSTGRES_PASSWORD=springpass
       - POSTGRES_DB=springdev
+    ports:
+      - 5432:5432
     volumes:
       - db-volume:/var/lib/postgresqlp/data
     networks:
