@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.lpamintuan.springhateoaspoc.controllers.assemblers.ManagerModelAssembler;
+import io.lpamintuan.springhateoaspoc.controllers.assemblers.OfficerModelAssembler;
 import io.lpamintuan.springhateoaspoc.models.Manager;
+import io.lpamintuan.springhateoaspoc.models.Officer;
 import io.lpamintuan.springhateoaspoc.repositories.ManagerRepository;
+import io.lpamintuan.springhateoaspoc.repositories.OfficerRepository;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 public class ManagerController {
@@ -24,13 +28,19 @@ public class ManagerController {
     ManagerRepository managerRepository;
 
     @Autowired
-    ManagerModelAssembler assembler;
+    OfficerRepository officerRepository;
+
+    @Autowired
+    ManagerModelAssembler managerModelAssembler;
+
+    @Autowired
+    OfficerModelAssembler officerModelAssembler;
 
     @GetMapping("/managers/{id}")
     public ResponseEntity<EntityModel<Manager>> getManager(@PathVariable("id") UUID id) {
 
         Optional<Manager> manager = managerRepository.findById(id);
-        EntityModel<Manager> managerModel = assembler.toModel(manager.get());
+        EntityModel<Manager> managerModel = managerModelAssembler.toModel(manager.get());
 
         return new ResponseEntity<>(managerModel, HttpStatus.OK);
     }
@@ -38,13 +48,16 @@ public class ManagerController {
     @GetMapping("/managers")
     public ResponseEntity<CollectionModel<EntityModel<Manager>>> getManagers() {
         List<Manager> managers = managerRepository.findAll();
-        CollectionModel<EntityModel<Manager>> managerCollectionModel = assembler.toCollectionModel(managers);
+        CollectionModel<EntityModel<Manager>> managerCollectionModel = managerModelAssembler.toCollectionModel(managers);
         return new ResponseEntity<>(managerCollectionModel, HttpStatus.OK);
     }
 
     @GetMapping("/managers/{id}/officers")
-    public ResponseEntity<?> getOfficersByManager(@PathVariable("id") UUID id) {
-        return null;
+    public ResponseEntity<CollectionModel<EntityModel<Officer>>> getOfficersByManager(@PathVariable("id") UUID id) {
+        List<Officer> officers = officerRepository.findAllByCurrentManager(id);
+        CollectionModel<EntityModel<Officer>> officerCollection = officerModelAssembler.toCollectionModel(officers);
+        officerCollection.add(linkTo(methodOn(ManagerController.class).getManager(id)).withRel("manager"));
+        return new ResponseEntity<>(officerCollection, HttpStatus.OK);
     }
     
 }
