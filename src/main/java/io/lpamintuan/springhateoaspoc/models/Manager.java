@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.hateoas.server.core.Relation;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Relation(collectionRelation = "managers")
 public class Manager {
 
     @Id
@@ -34,6 +38,7 @@ public class Manager {
     @Column(nullable = true, unique = false)
     private LocalDate dateJoined;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "currentManager", fetch = FetchType.LAZY, orphanRemoval = false)
     private Set<Officer> officers;
 
