@@ -14,7 +14,7 @@ services:
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_NAME=springdev
-      - DB_USERNAME=springuser
+      - DB_USERNAME=postgres
       - DB_PASSWORD=springpass
     networks:
       - myappnet
@@ -24,11 +24,10 @@ services:
   postgres:
     image: postgres:14.5
     environment:
-      - POSTGRES_USER=springuser
-      - POSTGRE_PASSWORD=springpass
+      - POSTGRES_PASSWORD=springpass
       - POSTGRES_DB=springdev
     volumes:
-      - db-volume:/var/lib/postgresql/data
+      - db-volume:/var/lib/postgresqlp/data
     networks:
       - myappnet
 
