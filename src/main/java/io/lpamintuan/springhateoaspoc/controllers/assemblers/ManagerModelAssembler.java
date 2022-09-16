@@ -35,8 +35,7 @@ public class ManagerModelAssembler implements RepresentationModelAssembler<Manag
         List<EntityModel<Manager>> managerList = new ArrayList<>();
 
         for(Manager m : entities) {
-            EntityModel<Manager> manager = EntityModel.of(m);
-            manager.add(linkTo(methodOn(ManagerController.class).getManager(m.getId())).withSelfRel());
+            EntityModel<Manager> manager = this.toModel(m);
             managerList.add(manager);
         }
         CollectionModel<EntityModel<Manager>> managerCollection = CollectionModel.of(managerList);
